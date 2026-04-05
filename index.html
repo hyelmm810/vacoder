@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VACODER</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#F5F2ED;
+  --ink:#1A1A18;
+  --muted:#888880;
+  --accent:#C8490A;
+  --line:rgba(26,26,24,0.13);
+  --dash:rgba(26,26,24,0.2);
+  --receipt-w:680px;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:#E8E4DC;
+  color:var(--ink);
+  font-family:'Space Mono',monospace;
+  overflow-x:hidden;
+  cursor:none;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+
+.cursor{position:fixed;width:6px;height:6px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+.cursor-ring{position:fixed;width:28px;height:28px;border:1px solid var(--ink);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.3;transition:width .18s,height .18s,opacity .18s;}
+
+#intro{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+#intro-msg{font-family:'Space Mono',monospace;font-size:clamp(13px,1.8vw,18px);font-weight:400;letter-spacing:.18em;color:var(--ink);opacity:0;text-align:center;}
+
+#main{opacity:0;transition:opacity .5s ease;position:relative;z-index:1;}
+#main.visible{opacity:1;}
+
+.receipt{
+  max-width:var(--receipt-w);margin:40px auto;background:var(--bg);position:relative;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E"),linear-gradient(to bottom,var(--bg) 0%,var(--bg) 100%);
+  box-shadow:0 2px 40px rgba(0,0,0,0.08),0 0 0 1px rgba(26,26,24,0.05);
+}
+.receipt-top{height:20px;background:linear-gradient(-45deg,var(--bg) 10px,transparent 0),linear-gradient(45deg,var(--bg) 10px,transparent 0);background-size:20px 20px;background-position:left bottom;background-color:#E8E4DC;}
+.receipt-bottom{height:20px;background:linear-gradient(-45deg,transparent 10px,var(--bg) 0),linear-gradient(45deg,transparent 10px,var(--bg) 0);background-size:20px 20px;background-position:left bottom;background-color:#E8E4DC;}
+
+/* ── HERO ── */
+.hero{padding:60px 64px 100px;position:relative;border-bottom:1px dashed var(--dash);}
+.hero::before{content:'';position:absolute;top:28px;left:50%;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;border:1.5px solid var(--dash);background:#E8E4DC;}
+
+.scan-line{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ink) 20%,var(--ink) 80%,transparent);opacity:0.15;animation:scan 3s ease-in-out infinite;pointer-events:none;z-index:2;}
+@keyframes scan{0%{top:15%;opacity:0;}10%{opacity:0.15;}90%{opacity:0.15;}100%{top:85%;opacity:0;}}
+
+/* hero typewriter */
+.hero-title{font-size:clamp(52px,8vw,96px);font-weight:700;line-height:.88;letter-spacing:-.02em;margin-bottom:6px;opacity:0;animation:fadeUp .7s ease .65s forwards;}
+.hero-title span{display:block;}
+.hero-title .typewriter-line{
+  display:inline-block;
+  overflow:hidden;
+  white-space:nowrap;
+  width:0;
+  border-right:2px solid var(--ink);
+  animation:none;
+}
+.hero-title .typewriter-line.typing{
+  animation:typeExpand var(--tw-dur,.4s) steps(var(--tw-steps,2),end) var(--tw-delay,0s) forwards,
+            blinkCaret .6s step-end infinite;
+}
+.hero-title .typewriter-line.done{
+  border-right:none;
+  width:auto;
+}
+@keyframes typeExpand{from{width:0;}to{width:var(--tw-width,100%);}}
+@keyframes blinkCaret{0%,100%{border-color:var(--ink);}50%{border-color:transparent;}}
+
+/* section title typewriter */
+.sec-title{font-size:12px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;overflow:hidden;white-space:nowrap;}
+.sec-title.typewriter{
+  display:inline-block;
+  width:0;
+  border-right:2px solid var(--ink);
+}
+.sec-title.typing{
+  animation:typeExpandSec var(--tw-dur,.6s) steps(var(--tw-steps,12),end) forwards,
+            blinkCaret .6s step-end infinite;
+}
+.sec-title.typed{
+  width:auto;
+  border-right:none;
+  animation:none;
+}
+
+@keyframes typeExpandSec{from{width:0;}to{width:var(--tw-width,100%);}}
+
+/* content fade after typewriter */
+.sec-content{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;}
+.sec-content.on{opacity:1;transform:translateY(0);}
+
+.barcode-bg{position:absolute;right:0;top:0;width:46%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;pointer-events:none;overflow:hidden;padding-bottom:0;}
+.barcode-sku{font-size:10px;letter-spacing:.2em;color:var(--muted);text-align:center;padding:6px 0 0;font-family:'Space Mono',monospace;}
+.barcode-lines{display:flex;gap:0;height:65%;align-items:flex-end;opacity:0;animation:barsReveal 1.2s cubic-bezier(.16,1,.3,1) .3s forwards;}
+.bar{background:var(--ink);height:100%;flex-shrink:0;transform-origin:bottom center;animation:barFloat var(--dur,4s) ease-in-out var(--delay,0s) infinite;}
+@keyframes barsReveal{from{opacity:0;clip-path:inset(100% 0 0 0);}to{opacity:1;clip-path:inset(0% 0 0 0);}}
+@keyframes barFloat{0%,100%{transform:scaleY(1);}50%{transform:scaleY(var(--scale,.88));}}
+
+.receipt-header{font-size:10px;letter-spacing:.28em;color:var(--muted);margin-bottom:18px;opacity:0;animation:fadeUp .6s ease .5s forwards;text-transform:uppercase;}
+.hero-title{font-size:clamp(52px,8vw,96px);font-weight:700;line-height:.88;letter-spacing:-.02em;margin-bottom:6px;opacity:0;animation:fadeUp .7s ease .65s forwards;}
+.hero-title span{display:block;}
+.hero-desc{font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.8;color:var(--ink);margin-bottom:4px;opacity:0;animation:fadeUp .6s ease .9s forwards;}
+.project-link{font-size:10px;letter-spacing:.15em;color:var(--muted);text-decoration:none;transition:color .2s;text-transform:uppercase;opacity:0;animation:fadeUp .6s ease .95s forwards;}
+.project-link:hover{color:var(--ink);}
+.receipt-rows{opacity:0;animation:fadeUp .6s ease 1s forwards;margin-bottom:4px;}
+.receipt-row{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;letter-spacing:.1em;color:var(--muted);padding:3px 0;}
+.receipt-row .dots{flex:1;border-bottom:1px dotted var(--dash);margin:0 6px;position:relative;top:-3px;}
+.hero-left-block{max-width:52%;}
+.hero-cta{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:16px;opacity:0;animation:fadeUp .6s ease 1.1s forwards;}
+.btn-primary{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;border:1px solid var(--ink);color:var(--ink);padding:9px 20px;text-decoration:none;position:relative;overflow:hidden;transition:color .22s;text-transform:uppercase;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .28s ease;}
+.btn-primary:hover::before{transform:scaleX(1);}
+.btn-primary:hover{color:var(--bg);}
+.btn-primary span{position:relative;z-index:1;}
+.scroll-hint{position:absolute;bottom:36px;left:64px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:8px;letter-spacing:.2em;color:var(--muted);opacity:0;animation:fadeUp .6s ease 1.3s forwards;}
+.scroll-line{width:1px;height:24px;background:var(--muted);position:relative;overflow:hidden;}
+.scroll-line::after{content:'';position:absolute;inset:0;background:var(--ink);animation:scrollAnim 1.6s ease-in-out infinite;}
+@keyframes scrollAnim{0%{transform:translateY(-100%);}100%{transform:translateY(100%);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── SECTIONS ── */
+.receipt-section{padding:48px 64px;border-bottom:1px dashed var(--dash);}
+.sec-header{display:flex;align-items:center;gap:0;margin-bottom:32px;}
+.sec-num{font-size:10px;color:var(--accent);letter-spacing:.2em;margin-right:10px;opacity:0;transition:opacity .3s ease;}
+.sec-title{font-size:12px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;}
+
+/* ── NOW BUILDING ── */
+.nb-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:stretch;}
+.nb-project-name{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.0;margin-bottom:14px;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px;}
+.nb-codename{font-size:11px;font-weight:400;letter-spacing:.15em;color:var(--muted);white-space:nowrap;}
+.nb-desc{font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:300;color:var(--muted);line-height:1.85;margin-bottom:24px;}
+.prog-item{margin-bottom:12px;}
+.prog-meta{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:5px;text-transform:uppercase;}
+.prog-track{height:1px;background:var(--line);position:relative;overflow:hidden;}
+.prog-fill{height:100%;background:var(--ink);animation:fillBar 1.4s cubic-bezier(.16,1,.3,1) 1.8s both;}
+@keyframes fillBar{from{width:0;}}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px;}
+.tag{font-size:9px;letter-spacing:.1em;border:1px dashed var(--dash);padding:3px 10px;color:var(--muted);text-transform:uppercase;}
+
+.build-log{border-left:1.5px solid var(--ink);padding-left:20px;position:relative;}
+.log-item{margin-bottom:20px;position:relative;opacity:.45;transition:opacity .3s;}
+.log-item:last-child{margin-bottom:0;}
+.log-item:hover,.log-item.active{opacity:1;}
+.log-item::before{content:'';position:absolute;left:-24.5px;top:4px;width:7px;height:7px;border-radius:50%;background:var(--bg);border:1.5px solid var(--muted);}
+.log-item.active::before{background:var(--ink);border-color:var(--ink);}
+.log-date{font-size:9px;color:var(--muted);letter-spacing:.15em;margin-bottom:4px;text-transform:uppercase;}
+.log-text{font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.7;}
+
+/* ── PROJECTS ── */
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.proj-card{
+  background:var(--bg);
+  padding:28px 24px;
+  transition:background .2s,color .2s;
+  position:relative;
+  overflow:hidden;
+  cursor:none;
+  display:flex;
+  flex-direction:column;
+}
+.proj-card:hover{background:var(--ink);color:var(--bg);}
+.proj-card:hover .proj-num,
+.proj-card:hover .proj-status,
+.proj-card:hover .proj-desc{color:rgba(245,242,237,0.5);}
+.proj-card:hover .proj-status.live{color:rgba(245,242,237,0.7);}
+.proj-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.2em;margin-bottom:16px;}
+.proj-name{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;margin-bottom:8px;line-height:1.2;}
+.proj-desc{font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:300;color:var(--muted);line-height:1.7;margin-bottom:16px;flex:1;}
+.proj-status{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);margin-top:auto;}
+.proj-status.live{color:var(--accent);}
+
+/* ── STACK ── */
+.stack-list{display:flex;flex-direction:column;gap:0;}
+.stack-row{display:flex;align-items:baseline;justify-content:space-between;padding:10px 0;border-bottom:1px dashed rgba(26,26,24,0.08);transition:background .15s;}
+.stack-row:last-child{border-bottom:none;}
+.stack-row:hover{background:rgba(26,26,24,0.025);}
+.stack-name{font-size:12px;font-weight:700;letter-spacing:.06em;flex-shrink:0;text-transform:uppercase;}
+.stack-role{font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:300;color:var(--muted);white-space:nowrap;}
+
+/* ── FOOTER ── */
+.receipt-footer{padding:40px 64px 48px;text-align:center;}
+.footer-logo{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px;}
+.footer-sub{font-size:10px;letter-spacing:.2em;color:var(--muted);margin-bottom:20px;text-transform:uppercase;}
+.footer-links{display:flex;justify-content:center;gap:20px;margin-bottom:20px;}
+.footer-links a{font-size:10px;letter-spacing:.15em;color:var(--muted);text-decoration:none;transition:color .2s;text-transform:uppercase;}
+.footer-links a:hover{color:var(--ink);}
+.footer-barcode-text{font-size:11px;letter-spacing:.28em;color:rgba(26,26,24,0.2);margin-top:16px;}
+.footer-thank{font-size:9px;letter-spacing:.4em;color:var(--muted);margin-top:12px;text-transform:uppercase;}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.on{opacity:1;transform:translateY(0);}
+
+@media(max-width:700px){
+  .hero,.receipt-section,.receipt-footer{padding-left:24px;padding-right:24px;}
+  .nb-grid{grid-template-columns:1fr;}
+  .projects-grid{grid-template-columns:1fr;}
+  .barcode-bg{opacity:1;}
+  .barcode-lines{opacity:.08 !important;}
+  .barcode-sku{opacity:.4;}
+  .scroll-hint{left:24px;}
+
+  /* order no. 줄바꿈 방지 */
+  .receipt-header{font-size:8px;letter-spacing:.15em;white-space:nowrap;}
+
+  /* 본문 너비 제한 해제 — 바코드가 연하니까 위에 올라가도 됨 */
+  .hero-left-block{max-width:100%;}
+
+  /* receipt-rows 줄바꿈 방지 + dots 유지 */
+  .receipt-row{flex-wrap:nowrap;font-size:10px;letter-spacing:.05em;}
+  .receipt-row span{white-space:nowrap;}
+  .receipt-row .dots{min-width:16px;}
+
+  /* 푸터 바코드 줄바꿈 방지 */
+  .footer-barcode-text{font-size:9px;letter-spacing:.12em;white-space:nowrap;}
+
+  /* 커서 숨기기 */
+  .cursor,.cursor-ring{display:none;}
+  body{cursor:auto;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div id="intro">
+  <p id="intro-msg">You've just decoded the vibes</p>
+</div>
+
+<div id="main">
+  <div class="receipt">
+
+    <div class="receipt-top"></div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="scan-line"></div>
+      <div class="barcode-bg">
+        <div class="barcode-lines" id="barcodeLines"></div>
+        <p class="barcode-sku">SKU 04 05 2026 UPD</p>
+      </div>
+
+      <p class="receipt-header">ORDER NO. VC-V1.0 &#160;&#183;&#160; TYPE. SYSTEM VIBE</p>
+      <h1 class="hero-title"><span>VA</span><span>CODER</span></h1>
+      <div class="hero-left-block">
+        <p class="hero-desc" style="margin-top:12px;">바이브코딩하는 바코더<br>올라운더 비개발자의 프로덕트 메이킹 기록</p>
+        <a href="#building" class="project-link" style="display:inline-block;">VIEW ACTIVE PROJECT &#8599;</a>
+        <div class="receipt-rows" style="margin-top:32px;">
+          <div class="receipt-row"><span>EST. SHIP</span><span class="dots"></span><span>PHASE 01 PROCESSING</span></div>
+          <div class="receipt-row"><span>STACK</span><span class="dots"></span><span>LOGIC + AI + UX + BIZ</span></div>
+          <div class="receipt-row"><span>STATUS</span><span class="dots"></span><span>OPEN FOR COLLABS</span></div>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <a href="https://instagram.com/vacoder_" class="btn-primary"><span>INSTAGRAM</span></a>
+        <a href="#" class="btn-primary" id="emailBtn" onclick="window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;"><span>vacoder&#64;naver.com</span></a>
+      </div>
+
+      <div class="scroll-hint"><div class="scroll-line"></div>&#8595;</div>
+    </div>
+
+    <!-- 01 NOW BUILDING -->
+    <div class="receipt-section" id="building">
+      <div class="sec-header" data-typewriter>
+        <span class="sec-num">01</span>
+        <span class="sec-title typewriter" data-text="IN TRANSIT">IN TRANSIT</span>
+      </div>
+      <div class="sec-content">
+        <div class="nb-grid">
+          <div>
+            <h2 class="nb-project-name">STAGE_H <span class="nb-codename">(CODENAME)</span></h2>
+            <p class="nb-desc">데이터 다중 필터링 및 시각화 엔진.<br>가용 리소스를 분석하여 최적의 선택지를 도출하는 의사결정 서포트 시스템.</p>
+            <div class="prog-item"><div class="prog-meta"><span>BACKEND</span><span>85%</span></div><div class="prog-track"><div class="prog-fill" style="width:85%"></div></div></div>
+            <div class="prog-item"><div class="prog-meta"><span>FRONTEND</span><span>60%</span></div><div class="prog-track"><div class="prog-fill" style="width:60%;animation-delay:2s"></div></div></div>
+            <div class="prog-item"><div class="prog-meta"><span>DEPLOY</span><span>20%</span></div><div class="prog-track"><div class="prog-fill" style="width:20%;animation-delay:2.2s"></div></div></div>
+            <div class="tag-row">
+              <span class="tag">NODE.JS</span><span class="tag">REACT</span><span class="tag">SUPABASE</span>
+            </div>
+          </div>
+          <div class="build-log">
+            <div class="log-item active"><p class="log-date">2026.04</p><p class="log-text">[NOW] 자동 수집 파이프라인 구축 및 DB 아키텍처 설계<br>[TBD] Closed Beta Test CBT 시행</p></div>
+            <div class="log-item"><p class="log-date">2026.03</p><p class="log-text">시장 페인포인트 분석 및 MVP 프로토타입 제작</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 PROJECTS -->
+    <div class="receipt-section">
+      <div class="sec-header" data-typewriter>
+        <span class="sec-num">02</span>
+        <span class="sec-title typewriter" data-text="ITEMS">ITEMS</span>
+      </div>
+      <div class="sec-content">
+        <div class="projects-grid">
+        <div class="proj-card">
+          <p class="proj-num">001</p>
+          <h3 class="proj-name">STAGE_H</h3>
+          <p class="proj-desc">데이터 필터링 및 시각화<br>의사결정 서포트 시스템</p>
+          <p class="proj-status live">&#9679; PROCESSING</p>
+        </div>
+        <div class="proj-card">
+          <p class="proj-num">002</p>
+          <h3 class="proj-name">TBD</h3>
+          <p class="proj-desc">NEXT PROJECT IN QUEUE.</p>
+          <p class="proj-status">&#9632; LOCKED</p>
+        </div>
+        <div class="proj-card">
+          <p class="proj-num">003</p>
+          <h3 class="proj-name">TBD</h3>
+          <p class="proj-desc">NEXT PROJECT IN QUEUE.</p>
+          <p class="proj-status">&#9632; LOCKED</p>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!-- 03 STACK -->
+    <div class="receipt-section">
+      <div class="sec-header" data-typewriter>
+        <span class="sec-num">03</span>
+        <span class="sec-title typewriter" data-text="SPECS">SPECS</span>
+      </div>
+      <div class="sec-content">
+        <div class="stack-list">
+        <div class="stack-row"><span class="stack-name">CLAUDE</span><span class="stack-role">바이브코딩 파트너</span></div>
+        <div class="stack-row"><span class="stack-name">NOTION</span><span class="stack-role">두뇌 + 자동화 허브</span></div>
+        <div class="stack-row"><span class="stack-name">REACT</span><span class="stack-role">프론트엔드 프레임워크</span></div>
+        <div class="stack-row"><span class="stack-name">NODE.JS</span><span class="stack-role">백엔드 서버</span></div>
+        <div class="stack-row"><span class="stack-name">SUPABASE</span><span class="stack-role">데이터베이스</span></div>
+        <div class="stack-row"><span class="stack-name">FRAMER</span><span class="stack-role">이 포트폴리오</span></div>
+      </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="receipt-footer">
+      <p class="footer-logo">VACODER</p>
+      <p class="footer-sub">바이브코딩하는 바코더 &#183; 2026</p>
+      <div class="footer-links">
+        <a href="https://instagram.com/vacoder_">INSTAGRAM</a>
+        <a href="#">GITHUB</a>
+        <a href="#" onclick="window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;">CONTACT</a>
+      </div>
+      <p class="footer-barcode-text">| || ||| | || ||| | || ||| | || ||| | ||</p>
+      <p class="footer-thank">THANK YOU FOR SCANNING</p>
+    </div>
+
+    <div class="receipt-bottom"></div>
+
+  </div>
+</div>
+
+<script>
+var cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+var mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;});
+(function ac(){
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(ac);
+})();
+document.querySelectorAll('a,button,.proj-card,.stack-row').forEach(function(el){
+  el.addEventListener('mouseenter',function(){ring.style.width='42px';ring.style.height='42px';ring.style.opacity='.5';});
+  el.addEventListener('mouseleave',function(){ring.style.width='28px';ring.style.height='28px';ring.style.opacity='.3';});
+});
+
+var introMsg=document.getElementById('intro-msg');
+var introEl=document.getElementById('intro');
+var mainEl=document.getElementById('main');
+setTimeout(function(){introMsg.style.transition='opacity .9s ease';introMsg.style.opacity='1';},300);
+setTimeout(function(){introMsg.style.transition='opacity .7s ease';introMsg.style.opacity='0';},1800);
+setTimeout(function(){
+  introEl.style.transition='opacity .6s ease';introEl.style.opacity='0';
+  setTimeout(function(){introEl.style.display='none';mainEl.classList.add('visible');},600);
+},2600);
+
+function alignBarcode(){
+  var emailBtn=document.getElementById('emailBtn');
+  var barcodeBg=document.querySelector('.barcode-bg');
+  if(!emailBtn||!barcodeBg)return;
+  var emailRect=emailBtn.getBoundingClientRect();
+  var heroRect=document.querySelector('.hero').getBoundingClientRect();
+  var bottomOffset=heroRect.bottom-emailRect.bottom;
+  barcodeBg.style.paddingBottom=bottomOffset+'px';
+}
+window.addEventListener('load',function(){setTimeout(alignBarcode,400);});
+
+document.fonts.ready.then(function(){
+  var bl=document.getElementById('barcodeLines');
+  var widths=[3,1,4,1,5,2,3,1,2,4,1,3,2,1,4,2,3,1,5,2,1,3,4,1,2,3,1,2,4,1,3,2,5,1,2,3,1,4,2,1];
+  widths.forEach(function(w,i){
+    if(i%2===0){
+      var bar=document.createElement('div');
+      bar.className='bar';
+      var dur=3.5+(i%5)*0.4;
+      var delay=(i*0.08)%2.5;
+      var scale=0.84+Math.random()*0.08;
+      bar.style.cssText='width:'+w*3+'px;--dur:'+dur+'s;--delay:'+delay+'s;--scale:'+scale+';';
+      bl.appendChild(bar);
+    }else{
+      var gap=document.createElement('div');
+      gap.style.cssText='width:'+w*2+'px;flex-shrink:0;';
+      bl.appendChild(gap);
+    }
+  });
+});
+
+/* TYPEWRITER for section headers */
+var twObserver=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting)return;
+    twObserver.unobserve(e.target);
+    var header=e.target;
+    var num=header.querySelector('.sec-num');
+    var title=header.querySelector('.sec-title');
+    var content=header.parentElement.querySelector('.sec-content');
+    var text=title.getAttribute('data-text')||title.textContent;
+    var steps=text.length;
+
+    /* show number first */
+    if(num)num.style.opacity='1';
+
+    /* measure full width */
+    title.style.width='auto';
+    title.style.visibility='hidden';
+    title.style.display='inline-block';
+    var fullWidth=title.offsetWidth;
+    title.style.visibility='';
+    title.style.width='0';
+
+    /* set CSS vars and start typing */
+    var duration=steps*0.06;
+    title.style.setProperty('--tw-steps',steps);
+    title.style.setProperty('--tw-dur',duration+'s');
+    title.style.setProperty('--tw-width',fullWidth+'px');
+    title.classList.add('typing');
+
+    /* after typing done, lock width, remove caret and show content */
+    setTimeout(function(){
+      title.style.width=fullWidth+'px';
+      title.classList.remove('typing');
+      title.classList.add('typed');
+      if(content)content.classList.add('on');
+    },(duration*1000)+200);
+  });
+},{threshold:.15});
+
+document.querySelectorAll('[data-typewriter]').forEach(function(el){
+  twObserver.observe(el);
+});
+
+/* keep old reveal for any remaining .reveal elements */
+var ro=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target);}
+  });
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+</script>
+</body>
+</html>
