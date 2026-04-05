@@ -3,7 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no,date=no,address=no">
 <title>VACODER</title>
+<!-- GA4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-341PH9431W"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-341PH9431W');
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -261,7 +270,7 @@ body::before{
       <h1 class="hero-title"><span>VA</span><span>CODER</span></h1>
       <div class="hero-left-block">
         <p class="hero-desc" style="margin-top:12px;">바이브코딩하는 바코더<br>올라운더 비개발자의 프로덕트 메이킹 기록</p>
-        <a href="#building" class="project-link" style="display:inline-block;">VIEW ACTIVE PROJECT &#8599;</a>
+        <a href="#building" class="project-link" style="display:inline-block;" onclick="gtag('event','click_active_project',{event_category:'cta',event_label:'hero'});">VIEW ACTIVE PROJECT &#8599;</a>
         <div class="receipt-rows" style="margin-top:32px;">
           <div class="receipt-row"><span>EST. SHIP</span><span class="dots"></span><span>PHASE 01 PROCESSING</span></div>
           <div class="receipt-row"><span>STACK</span><span class="dots"></span><span>LOGIC + AI + UX + BIZ</span></div>
@@ -270,8 +279,8 @@ body::before{
       </div>
 
       <div class="hero-cta">
-        <a href="https://instagram.com/vacoder_" class="btn-primary"><span>INSTAGRAM</span></a>
-        <a href="#" class="btn-primary" id="emailBtn" onclick="window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;"><span>vacoder&#64;naver.com</span></a>
+        <a href="https://instagram.com/vacoder_" class="btn-primary" onclick="gtag('event','click_instagram',{event_category:'cta',event_label:'hero'});"><span>INSTAGRAM</span></a>
+        <a href="#" class="btn-primary" id="emailBtn" onclick="gtag('event','click_email',{event_category:'cta',event_label:'hero'});window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;"><span>vacoder&#64;naver.com</span></a>
       </div>
 
       <div class="scroll-hint"><div class="scroll-line"></div>&#8595;</div>
@@ -356,9 +365,8 @@ body::before{
       <p class="footer-logo">VACODER</p>
       <p class="footer-sub">바이브코딩하는 바코더 &#183; 2026</p>
       <div class="footer-links">
-        <a href="https://instagram.com/vacoder_">INSTAGRAM</a>
-        <a href="#">GITHUB</a>
-        <a href="#" onclick="window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;">CONTACT</a>
+        <a href="https://instagram.com/vacoder_" onclick="gtag('event','click_instagram',{event_category:'cta',event_label:'footer'});">INSTAGRAM</a>
+        <a href="#" onclick="gtag('event','click_contact',{event_category:'cta',event_label:'footer'});window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;">CONTACT</a>
       </div>
       <p class="footer-barcode-text">| || ||| | || ||| | || ||| | || ||| | ||</p>
       <p class="footer-thank">THANK YOU FOR SCANNING</p>
