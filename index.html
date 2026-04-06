@@ -263,7 +263,7 @@ body::before{
       <div class="scan-line"></div>
       <div class="barcode-bg">
         <div class="barcode-lines" id="barcodeLines"></div>
-        <p class="barcode-sku">SKU 04 05 2026 UPD</p>
+        <p class="barcode-sku">SKU 04 06 2026 UPD</p>
       </div>
 
       <p class="receipt-header">ORDER NO. VC-V1.0 &#160;&#183;&#160; TYPE. SYSTEM VIBE</p>
@@ -297,16 +297,13 @@ body::before{
           <div>
             <h2 class="nb-project-name">STAGE_H <span class="nb-codename">(CODENAME)</span></h2>
             <p class="nb-desc">데이터 다중 필터링 및 시각화 엔진.<br>가용 리소스를 분석하여 최적의 선택지를 도출하는 의사결정 서포트 시스템.</p>
-            <div class="prog-item"><div class="prog-meta"><span>BACKEND</span><span>85%</span></div><div class="prog-track"><div class="prog-fill" style="width:85%"></div></div></div>
-            <div class="prog-item"><div class="prog-meta"><span>FRONTEND</span><span>60%</span></div><div class="prog-track"><div class="prog-fill" style="width:60%;animation-delay:2s"></div></div></div>
-            <div class="prog-item"><div class="prog-meta"><span>DEPLOY</span><span>20%</span></div><div class="prog-track"><div class="prog-fill" style="width:20%;animation-delay:2.2s"></div></div></div>
-            <div class="tag-row">
-              <span class="tag">NODE.JS</span><span class="tag">REACT</span><span class="tag">SUPABASE</span>
-            </div>
+            <div class="prog-item"><div class="prog-meta"><span>BACKEND</span><span>45%</span></div><div class="prog-track"><div class="prog-fill" style="width:45%"></div></div></div>
+            <div class="prog-item"><div class="prog-meta"><span>FRONTEND</span><span>25%</span></div><div class="prog-track"><div class="prog-fill" style="width:25%;animation-delay:2s"></div></div></div>
+            <div class="prog-item"><div class="prog-meta"><span>DEPLOY</span><span>5%</span></div><div class="prog-track"><div class="prog-fill" style="width:5%;animation-delay:2.2s"></div></div></div>
           </div>
           <div class="build-log">
-            <div class="log-item active"><p class="log-date">2026.04</p><p class="log-text">[NOW] 자동 수집 파이프라인 구축 및 DB 아키텍처 설계<br>[TBD] Closed Beta Test CBT 시행</p></div>
-            <div class="log-item"><p class="log-date">2026.03</p><p class="log-text">시장 페인포인트 분석 및 MVP 프로토타입 제작</p></div>
+            <div class="log-item active"><p class="log-date">2026.04</p><p class="log-text">[NOW] 백엔드 구축<br><span style="color:var(--muted);">MVP 프로토타입 제작<br>시장 페인포인트 분석</span></p></div>
+            <div class="log-item"><p class="log-date">2026.03</p><p class="log-text">클로드 구독 시작</p></div>
           </div>
         </div>
       </div>
@@ -351,11 +348,7 @@ body::before{
       <div class="sec-content">
         <div class="stack-list">
         <div class="stack-row"><span class="stack-name">CLAUDE</span><span class="stack-role">바이브코딩 파트너</span></div>
-        <div class="stack-row"><span class="stack-name">NOTION</span><span class="stack-role">두뇌 + 자동화 허브</span></div>
-        <div class="stack-row"><span class="stack-name">REACT</span><span class="stack-role">프론트엔드 프레임워크</span></div>
-        <div class="stack-row"><span class="stack-name">NODE.JS</span><span class="stack-role">백엔드 서버</span></div>
-        <div class="stack-row"><span class="stack-name">SUPABASE</span><span class="stack-role">데이터베이스</span></div>
-        <div class="stack-row"><span class="stack-name">VERCEL</span><span class="stack-role">이 포트폴리오</span></div>
+        <div class="stack-row" style="opacity:.35;"><span class="stack-name">&#183;&#183;&#183;</span><span class="stack-role">MORE INCOMING</span></div>
       </div>
       </div>
     </div>
@@ -484,6 +477,69 @@ var ro=new IntersectionObserver(function(entries){
   });
 },{threshold:.1});
 document.querySelectorAll('.reveal').forEach(function(el){ro.observe(el);});
+
+/* GA4 section view tracking */
+var sectionNames={0:'in_transit',1:'items',2:'specs'};
+var secObserver=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting)return;
+    secObserver.unobserve(e.target);
+    var idx=Array.prototype.indexOf.call(document.querySelectorAll('.receipt-section'),e.target);
+    var name=sectionNames[idx]||'section_'+idx;
+    gtag('event','view_section',{event_category:'scroll',event_label:name});
+  });
+},{threshold:.3});
+document.querySelectorAll('.receipt-section').forEach(function(el){secObserver.observe(el);});
+
+/* GA4 footer view tracking */
+var footerEl=document.querySelector('.receipt-footer');
+if(footerEl){
+  var footObserver=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting)return;
+      footObserver.unobserve(e.target);
+      gtag('event','view_section',{event_category:'scroll',event_label:'footer'});
+    });
+  },{threshold:.3});
+  footObserver.observe(footerEl);
+}
+
+/* GA4 project card click tracking */
+document.querySelectorAll('.proj-card').forEach(function(card,i){
+  card.addEventListener('click',function(){
+    var name=card.querySelector('.proj-name').textContent.trim();
+    gtag('event','click_project_card',{event_category:'engagement',event_label:name,card_index:i+1});
+  });
+});
+
+/* GA4 time-on-page milestones */
+var timeMilestones=[10,30,60,120];
+var timeFired={};
+setInterval(function(){
+  var elapsed=Math.floor((Date.now()-window.pageLoadTime)/1000);
+  timeMilestones.forEach(function(sec){
+    if(elapsed>=sec&&!timeFired[sec]){
+      timeFired[sec]=true;
+      gtag('event','time_on_page',{event_category:'engagement',event_label:sec+'s',value:sec});
+    }
+  });
+},5000);
+window.pageLoadTime=Date.now();
+
+/* GA4 scroll depth tracking (25/50/75/100%) */
+var scrollFired={};
+window.addEventListener('scroll',function(){
+  var scrollTop=window.pageYOffset||document.documentElement.scrollTop;
+  var docHeight=document.documentElement.scrollHeight-window.innerHeight;
+  if(docHeight<=0)return;
+  var pct=Math.round((scrollTop/docHeight)*100);
+  [25,50,75,100].forEach(function(milestone){
+    if(pct>=milestone&&!scrollFired[milestone]){
+      scrollFired[milestone]=true;
+      gtag('event','scroll_depth',{event_category:'engagement',event_label:milestone+'%',value:milestone});
+    }
+  });
+});
 </script>
 </body>
 </html>
