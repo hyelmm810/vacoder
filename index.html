@@ -388,11 +388,13 @@ document.querySelectorAll('a,button,.proj-card,.stack-row').forEach(function(el)
 var introMsg=document.getElementById('intro-msg');
 var introEl=document.getElementById('intro');
 var mainEl=document.getElementById('main');
+if(window.location.hash)history.replaceState(null,null,' ');
+window.scrollTo(0,0);
 setTimeout(function(){introMsg.style.transition='opacity .9s ease';introMsg.style.opacity='1';},300);
 setTimeout(function(){introMsg.style.transition='opacity .7s ease';introMsg.style.opacity='0';},1800);
 setTimeout(function(){
   introEl.style.transition='opacity .6s ease';introEl.style.opacity='0';
-  setTimeout(function(){introEl.style.display='none';mainEl.classList.add('visible');},600);
+  setTimeout(function(){introEl.style.display='none';mainEl.classList.add('visible');window.scrollTo(0,0);},600);
 },2600);
 
 function alignBarcode(){
