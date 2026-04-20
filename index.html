@@ -216,6 +216,7 @@ body::before{
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;}
 .reveal.on{opacity:1;transform:translateY(0);}
 
+.mobile-br{display:none;}
 @media(max-width:700px){
   .hero,.receipt-section,.receipt-footer{padding-left:24px;padding-right:24px;}
   .nb-grid{grid-template-columns:1fr;}
@@ -238,6 +239,12 @@ body::before{
 
   /* 푸터 바코드 줄바꿈 방지 */
   .footer-barcode-text{font-size:9px;letter-spacing:.12em;white-space:nowrap;}
+
+  /* SKU 짤림 방지 */
+  .barcode-sku{width:auto !important;text-align:right !important;}
+
+  /* 모바일 전용 줄바꿈 */
+  .mobile-br{display:block;}
 
   /* 커서 숨기기 */
   .cursor,.cursor-ring{display:none;}
@@ -295,7 +302,7 @@ body::before{
         <div class="nb-grid">
           <div>
             <h2 class="nb-project-name">내집마련 <span class="nb-codename">(FINDMYZIP)</span></h2>
-            <p class="nb-desc">실거래가 기반 아파트 다중 필터링 웹앱.<br>내 가용 리소스를 분석해 실질 구매력과 최적 단지를 보여주는 부동산 매수 의사결정 서포트 시스템.</p>
+            <p class="nb-desc">실거래가 기반 아파트 다중 필터링 웹앱.<br>내 가용 리소스를 분석해 실질 구매력과 최적 단지를 보여주는<span class="mobile-br"></span> 부동산 매수 의사결정 서포트 시스템.</p>
             <div class="prog-item"><div class="prog-meta"><span>BACKEND</span><span>85%</span></div><div class="prog-track"><div class="prog-fill" style="width:85%"></div></div></div>
             <div class="prog-item"><div class="prog-meta"><span>FRONTEND</span><span>60%</span></div><div class="prog-track"><div class="prog-fill" style="width:60%;animation-delay:2s"></div></div></div>
             <div class="prog-item"><div class="prog-meta"><span>DEPLOY</span><span>50%</span></div><div class="prog-track"><div class="prog-fill" style="width:50%;animation-delay:2.2s"></div></div></div>
@@ -319,7 +326,7 @@ body::before{
         <div class="proj-card">
           <p class="proj-num">001</p>
           <h3 class="proj-name">내집마련 <span style="font-size:9px;font-weight:400;letter-spacing:.15em;color:var(--muted);">(FINDMYZIP)</span></h3>
-          <p class="proj-desc">실거래가 기반 아파트 다중 필터링. 부동산 매수 의사결정 서포트 시스템.</p>
+          <p class="proj-desc">실거래가 기반 아파트 다중 필터링.<span class="mobile-br"></span> 부동산 매수 의사결정 서포트 시스템.</p>
           <p class="proj-status live">&#9679; OUT FOR DELIVERY</p>
         </div>
         <div class="proj-card">
