@@ -16,6 +16,7 @@ gtag('config','G-341PH9431W');
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+*{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 :root{
   --bg:#F5F2ED;
   --ink:#1A1A18;
@@ -108,14 +109,14 @@ body::before{
 .sec-content{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;}
 .sec-content.on{opacity:1;transform:translateY(0);}
 
-.barcode-bg{position:absolute;right:0;top:0;width:46%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;pointer-events:none;overflow:hidden;padding-bottom:0;}
+.barcode-bg{position:absolute;right:0;top:0;width:46%;height:100%;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;pointer-events:none;overflow:hidden;padding-bottom:0;}
 .barcode-sku{font-size:10px;letter-spacing:.2em;color:var(--muted);text-align:center;padding:6px 0 0;font-family:'Space Mono',monospace;}
 .barcode-lines{display:flex;gap:0;height:65%;align-items:flex-end;opacity:0;animation:barsReveal 1.2s cubic-bezier(.16,1,.3,1) .3s forwards;}
 .bar{background:var(--ink);height:100%;flex-shrink:0;transform-origin:bottom center;animation:barFloat var(--dur,4s) ease-in-out var(--delay,0s) infinite;}
 @keyframes barsReveal{from{opacity:0;clip-path:inset(100% 0 0 0);}to{opacity:1;clip-path:inset(0% 0 0 0);}}
 @keyframes barFloat{0%,100%{transform:scaleY(1);}50%{transform:scaleY(var(--scale,.88));}}
 
-.receipt-header{font-size:10px;letter-spacing:.28em;color:var(--muted);margin-bottom:18px;opacity:0;animation:fadeUp .6s ease .5s forwards;text-transform:uppercase;}
+.receipt-header{font-size:8px;letter-spacing:.20em;color:var(--muted);margin-bottom:18px;opacity:0;animation:fadeUp .6s ease .5s forwards;text-transform:uppercase;}
 .hero-title{font-size:clamp(52px,8vw,96px);font-weight:700;line-height:.88;letter-spacing:-.02em;margin-bottom:6px;opacity:0;animation:fadeUp .7s ease .65s forwards;}
 .hero-title span{display:block;}
 .hero-desc{font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:300;line-height:1.8;color:var(--ink);margin-bottom:4px;opacity:0;animation:fadeUp .6s ease .9s forwards;}
@@ -145,7 +146,7 @@ body::before{
 
 /* ── NOW BUILDING ── */
 .nb-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:stretch;}
-.nb-project-name{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.0;margin-bottom:14px;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px;}
+.nb-project-name{font-size:clamp(28px,4vw,48px);font-weight:700;line-height:1.0;margin-bottom:14px;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px;word-break:keep-all;}
 .nb-codename{font-size:11px;font-weight:400;letter-spacing:.15em;color:var(--muted);white-space:nowrap;}
 .nb-desc{font-size:12px;font-family:'Noto Sans KR',sans-serif;font-weight:300;color:var(--muted);line-height:1.85;margin-bottom:24px;}
 .prog-item{margin-bottom:12px;}
@@ -189,8 +190,8 @@ body::before{
 .proj-card:hover .proj-desc{color:rgba(245,242,237,0.5);}
 .proj-card:hover .proj-status.live{color:rgba(245,242,237,0.7);}
 .proj-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.2em;margin-bottom:16px;}
-.proj-name{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.2;white-space:nowrap;}
-.proj-desc{font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:300;color:var(--muted);line-height:1.7;margin-bottom:16px;flex:1;}
+.proj-name{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.2;white-space:normal;word-break:break-word;}
+.proj-desc{font-size:11px;font-family:'Noto Sans KR',sans-serif;font-weight:300;color:var(--muted);line-height:1.7;margin-bottom:16px;flex:1;word-break:keep-all;}
 .proj-status{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--muted);margin-top:auto;}
 .proj-status.live{color:var(--accent);}
 
@@ -263,23 +264,21 @@ body::before{
       <div class="scan-line"></div>
       <div class="barcode-bg">
         <div class="barcode-lines" id="barcodeLines"></div>
-        <p class="barcode-sku">SKU 04 06 2026 UPD</p>
+        <p class="barcode-sku" id="barcodeSku">SKU 04 20 2026 UPD</p>
       </div>
 
-      <p class="receipt-header">ORDER NO. VC-V1.0 &#160;&#183;&#160; TYPE. SYSTEM VIBE</p>
+      <p class="receipt-header">ORDER NO. VC-V1.1 &#160;&#183;&#160; TYPE. SYSTEM VIBE</p>
       <h1 class="hero-title"><span>VA</span><span>CODER</span></h1>
       <div class="hero-left-block">
-        <p class="hero-desc" style="margin-top:12px;">바이브코딩하는 바코더<br>올라운더 비개발자의 프로덕트 메이킹 기록</p>
-        <a href="#building" class="project-link" style="display:inline-block;" onclick="gtag('event','click_active_project',{event_category:'cta',event_label:'hero'});">VIEW ACTIVE PROJECT &#8599;</a>
-        <div class="receipt-rows" style="margin-top:32px;">
-          <div class="receipt-row"><span>EST. SHIP</span><span class="dots"></span><span>PHASE 01 PROCESSING</span></div>
-          <div class="receipt-row"><span>STACK</span><span class="dots"></span><span>LOGIC + AI + UX + BIZ</span></div>
+        <p class="hero-desc" style="margin-top:12px;font-size:11px;color:var(--muted);letter-spacing:.1em;font-weight:400;">바이브코딩하는 비개발자 올라운더</p>
+<div class="receipt-rows" style="margin-top:16px;">
+          <div class="receipt-row"><span>EST.SHIP</span><span class="dots"></span><span>ITEM 01 OUT FOR DELIVERY</span></div>
+          <div class="receipt-row"><span>CONTENTS</span><span class="dots"></span><span>LOGIC + AI + UX + BIZ</span></div>
           <div class="receipt-row"><span>STATUS</span><span class="dots"></span><span>OPEN FOR COLLABS</span></div>
         </div>
       </div>
 
       <div class="hero-cta">
-        <a href="https://instagram.com/vacoder_" class="btn-primary" onclick="gtag('event','click_instagram',{event_category:'cta',event_label:'hero'});"><span>INSTAGRAM</span></a>
         <a href="#" class="btn-primary" id="emailBtn" onclick="gtag('event','click_email',{event_category:'cta',event_label:'hero'});window.location='mai'+'lto:'+'vaco'+'der@'+'nav'+'er.com';return false;"><span>vacoder&#64;naver.com</span></a>
       </div>
 
@@ -295,14 +294,14 @@ body::before{
       <div class="sec-content">
         <div class="nb-grid">
           <div>
-            <h2 class="nb-project-name">STAGE_H <span class="nb-codename">(CODENAME)</span></h2>
-            <p class="nb-desc">데이터 다중 필터링 및 시각화 엔진.<br>가용 리소스를 분석하여 최적의 선택지를 도출하는 의사결정 서포트 시스템.</p>
-            <div class="prog-item"><div class="prog-meta"><span>BACKEND</span><span>45%</span></div><div class="prog-track"><div class="prog-fill" style="width:45%"></div></div></div>
-            <div class="prog-item"><div class="prog-meta"><span>FRONTEND</span><span>25%</span></div><div class="prog-track"><div class="prog-fill" style="width:25%;animation-delay:2s"></div></div></div>
-            <div class="prog-item"><div class="prog-meta"><span>DEPLOY</span><span>5%</span></div><div class="prog-track"><div class="prog-fill" style="width:5%;animation-delay:2.2s"></div></div></div>
+            <h2 class="nb-project-name">내집마련 <span class="nb-codename">(FINDMYZIP)</span></h2>
+            <p class="nb-desc">실거래가 기반 아파트 다중 필터링 웹앱.<br>내 가용 리소스를 분석해 실질 구매력과 최적 단지를 보여주는 부동산 매수 의사결정 서포트 시스템.</p>
+            <div class="prog-item"><div class="prog-meta"><span>BACKEND</span><span>85%</span></div><div class="prog-track"><div class="prog-fill" style="width:85%"></div></div></div>
+            <div class="prog-item"><div class="prog-meta"><span>FRONTEND</span><span>60%</span></div><div class="prog-track"><div class="prog-fill" style="width:60%;animation-delay:2s"></div></div></div>
+            <div class="prog-item"><div class="prog-meta"><span>DEPLOY</span><span>50%</span></div><div class="prog-track"><div class="prog-fill" style="width:50%;animation-delay:2.2s"></div></div></div>
           </div>
           <div class="build-log">
-            <div class="log-item active"><p class="log-date">2026.04</p><p class="log-text">[NOW] 백엔드 구축<br><span style="color:var(--muted);">MVP 프로토타입 제작<br>시장 페인포인트 분석</span></p></div>
+            <div class="log-item active"><p class="log-date">2026.04</p><p class="log-text"><a href="https://findmyzip.vercel.app" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--muted);padding-bottom:1px;transition:color .2s,border-color .2s;" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)';" onmouseout="this.style.color='inherit';this.style.borderColor='var(--muted)';">[NOW] Web-BETA 오픈 &#8599;</a><br><span style="color:var(--muted);">MVP 프로토타입 제작<br>백엔드 구축<br>시장 페인포인트 분석</span></p></div>
             <div class="log-item"><p class="log-date">2026.03</p><p class="log-text">클로드 구독 시작</p></div>
           </div>
         </div>
@@ -319,15 +318,15 @@ body::before{
         <div class="projects-grid">
         <div class="proj-card">
           <p class="proj-num">001</p>
-          <h3 class="proj-name">STAGE_H <span style="font-size:9px;font-weight:400;letter-spacing:.15em;color:var(--muted);">(CODENAME)</span></h3>
-          <p class="proj-desc">데이터 필터링 및 시각화<br>의사결정 서포트 시스템</p>
-          <p class="proj-status live">&#9679; PROCESSING</p>
+          <h3 class="proj-name">내집마련 <span style="font-size:9px;font-weight:400;letter-spacing:.15em;color:var(--muted);">(FINDMYZIP)</span></h3>
+          <p class="proj-desc">실거래가 기반 아파트 다중 필터링. 부동산 매수 의사결정 서포트 시스템.</p>
+          <p class="proj-status live">&#9679; OUT FOR DELIVERY</p>
         </div>
         <div class="proj-card">
           <p class="proj-num">002</p>
-          <h3 class="proj-name">TBD</h3>
-          <p class="proj-desc">NEXT PROJECT IN QUEUE.</p>
-          <p class="proj-status">&#9632; LOCKED</p>
+          <h3 class="proj-name" style="white-space:nowrap;">PROJECT_S <span style="font-size:9px;font-weight:400;letter-spacing:.15em;color:var(--muted);">(CODENAME)</span></h3>
+          <p class="proj-desc">LLM 기반 복합 데이터 추론 및 분석 시스템.</p>
+          <p class="proj-status">&#9632; PENDING</p>
         </div>
         <div class="proj-card">
           <p class="proj-num">003</p>
@@ -347,10 +346,19 @@ body::before{
       </div>
       <div class="sec-content">
         <div class="stack-list">
-        <div class="stack-row"><span class="stack-name">CLAUDE</span><span class="stack-role">바이브코딩 파트너</span></div>
-        <div class="stack-row" style="opacity:.35;"><span class="stack-name">&#183;&#183;&#183;</span><span class="stack-role">MORE INCOMING</span></div>
+        <div class="stack-row"><span class="stack-name">CLAUDE</span><span class="stack-role">VIBE CODING PARTNER</span></div>
+        <div class="stack-row"><span class="stack-name">REACT / NODE.JS</span><span class="stack-role">WEB INTERFACE</span></div>
+        <div class="stack-row"><span class="stack-name">CLOUD BAAS</span><span class="stack-role">DB &amp; AUTH SYSTEM</span></div>
+        <div class="stack-row"><span class="stack-name">CUSTOM AI</span><span class="stack-role">CORE BUSINESS LOGIC</span></div>
+        <div class="stack-row"><span class="stack-name">CI/CD PIPELINE</span><span class="stack-role">AUTO DEPLOYMENT</span></div>
+        <div class="stack-row"><span class="stack-name">PRODUCT OPS</span><span class="stack-role">MONITORING &amp; FEEDBACK</span></div>
       </div>
       </div>
+    </div>
+
+    <!-- SIGNAL -->
+    <div style="border-bottom:1px dashed var(--dash);padding:18px 64px;text-align:center;">
+      <p style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;">CORE LOGIC READY FOR BUSINESS INTEGRATION.</p>
     </div>
 
     <!-- FOOTER -->
@@ -426,6 +434,8 @@ document.fonts.ready.then(function(){
       bl.appendChild(gap);
     }
   });
+  var sku=document.getElementById('barcodeSku');
+  if(sku)setTimeout(function(){sku.style.width=bl.offsetWidth+'px';sku.style.textAlign='center';},100);
 });
 
 /* TYPEWRITER for section headers */
@@ -527,6 +537,11 @@ setInterval(function(){
   });
 },5000);
 window.pageLoadTime=Date.now();
+
+/* copy & drag protection */
+document.addEventListener('copy',function(e){e.preventDefault();});
+document.addEventListener('contextmenu',function(e){e.preventDefault();});
+document.addEventListener('dragstart',function(e){e.preventDefault();});
 
 /* GA4 scroll depth tracking (25/50/75/100%) */
 var scrollFired={};
